@@ -11,9 +11,9 @@ func InitSoapHandler(srvs services.Services) *soap.Server {
 	srv := soap.NewServer()
 	// srv.R
 	srv.RegisterHandler(
-		"about",
+		"/about",
 		"aboutRequest",
-		"",
+		"aboutRequest",
 		func() interface{} {
 			return &AboutRequest{}
 		},
@@ -22,9 +22,9 @@ func InitSoapHandler(srvs services.Services) *soap.Server {
 		},
 	)
 	srv.RegisterHandler(
-		"kzhk_projects",
+		"/kzhk_projects",
 		"kzhkProjectsRequest",
-		"",
+		"kzhkProjectsRequest",
 		func() interface{} {
 			return &KzhkProjectsRequest{}
 		},
@@ -33,9 +33,9 @@ func InitSoapHandler(srvs services.Services) *soap.Server {
 		},
 	)
 	srv.RegisterHandler(
-		"astana_buildings",
+		"/astana_buildings",
 		"astanaBuildingsRequest",
-		"",
+		"astanaBuildingsRequest",
 		func() interface{} {
 			return &AstanaBuildingsRequest{}
 		},

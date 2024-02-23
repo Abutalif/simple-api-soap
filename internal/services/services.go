@@ -2,6 +2,7 @@ package services
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/url"
 	"soap-server/internal/entities"
@@ -34,6 +35,8 @@ func (s Services) GiveAstanaBuildings() ([]entities.AstanaBuilding, error) {
 	if err = json.NewDecoder(resp.Body).Decode(&res); err != nil {
 		return nil, err
 	}
+	fmt.Println(res)
+
 	return res, nil
 }
 
@@ -47,13 +50,17 @@ func (s Services) GiveKZHKProjects() ([]entities.KHCAllowedProject, error) {
 	if err = json.NewDecoder(resp.Body).Decode(&res); err != nil {
 		return nil, err
 	}
+	fmt.Println(res)
 	return res, nil
 }
 
 func (s Services) GiveAbout() entities.About {
 	abt := entities.About{
 		Description:   "This service provides following data with the URLs:",
-		AvailableData: s.apiURLs,
+		AvailableData: make([]string, 0, len(s.apiURLs)),
+	}
+	for k, v := range s.apiURLs {
+		abt.AvailableData = append(abt.AvailableData, "service: "+k+" URL: "+v)
 	}
 	return abt
 }

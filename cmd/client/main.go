@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"log"
+	"net/http"
 	"soap-server/internal/entities"
 	soaphandlers "soap-server/pkg/transport/handlers"
 
@@ -10,28 +11,35 @@ import (
 )
 
 func main() {
+	var (
+		client *soap.Client
+		resp   *http.Response
+		err    error
+	)
 	ctx := context.Background()
-	client := soap.NewClient("http://127.0.0.1:8080/", nil)
 
+	client = soap.NewClient("http://127.0.0.1:8080/about", nil)
 	about := entities.About{}
-	httpResp, err := client.Call(ctx, "about", &soaphandlers.AboutRequest{}, &about)
+	resp, err = client.Call(ctx, "aboutRequest", &soaphandlers.AboutRequest{}, &about)
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
-	log.Println(about, httpResp.Status)
+	log.Println(about, resp.Status)
 
+	client = soap.NewClient("http://127.0.0.1:8080/astana_buildings", nil)
 	astanaBuildings := entities.AstanaBuilding{}
-	httpResp, err = client.Call(ctx, "astanaBuildingsRequest", &soaphandlers.AboutRequest{}, &astanaBuildings)
+	resp, err = client.Call(ctx, "astanaBuildingsRequest", &soaphandlers.AstanaBuildingsRequest{}, &astanaBuildings)
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
-	log.Println(astanaBuildings, httpResp.Status)
+	log.Println(astanaBuildings, resp.Status)
 
+	client = soap.NewClient("http://127.0.0.1:8080/kzhk_projects", nil)
 	kzhkProjects := entities.KHCAllowedProject{}
-	httpResp, err = client.Call(ctx, "kzhkProjectsRequest", &soaphandlers.AboutRequest{}, &kzhkProjects)
+	resp, err = client.Call(ctx, "kzhkProjectsRequest", &soaphandlers.KzhkProjectsRequest{}, &kzhkProjects)
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
 
-	log.Println(kzhkProjects, httpResp.Status)
+	log.Println(kzhkProjects, resp.Status)
 }

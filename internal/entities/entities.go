@@ -27,7 +27,7 @@ type AstanaBuilding struct {
 
 type About struct {
 	Description   string
-	AvailableData map[string]string
+	AvailableData []string
 }
 
 type Data interface {
