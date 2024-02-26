@@ -1,45 +1,29 @@
 package main
 
 import (
-	"context"
-	"log"
+	"bytes"
+	"encoding/xml"
+	"fmt"
 	"net/http"
 	"soap-server/internal/entities"
 	soaphandlers "soap-server/pkg/transport/handlers"
-
-	"github.com/globusdigital/soap"
 )
 
 func main() {
-	var (
-		client *soap.Client
-		resp   *http.Response
-		err    error
-	)
-	ctx := context.Background()
-
-	client = soap.NewClient("http://127.0.0.1:8080/about", nil)
-	about := entities.About{}
-	resp, err = client.Call(ctx, "aboutRequest", &soaphandlers.AboutRequest{}, &about)
+	var buffer []byte
+	client := http.Client{}
+	resp, err := client.Post("http://127.0.0.1:8080/about", "application/soap+xml", bytes.NewBuffer(buffer))
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println("post error:", err)
+		return
 	}
-	log.Println(about, resp.Status)
-
-	client = soap.NewClient("http://127.0.0.1:8080/astana_buildings", nil)
-	astanaBuildings := entities.AstanaBuilding{}
-	resp, err = client.Call(ctx, "astanaBuildingsRequest", &soaphandlers.AstanaBuildingsRequest{}, &astanaBuildings)
+	defer resp.Body.Close()
+	var envelope soaphandlers.Envelope[entities.About]
+	err = xml.NewDecoder(resp.Body).Decode(&envelope)
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println("decoder error:", err)
+		return
 	}
-	log.Println(astanaBuildings, resp.Status)
+	fmt.Printf("%+v\n", envelope)
 
-	client = soap.NewClient("http://127.0.0.1:8080/kzhk_projects", nil)
-	kzhkProjects := entities.KHCAllowedProject{}
-	resp, err = client.Call(ctx, "kzhkProjectsRequest", &soaphandlers.KzhkProjectsRequest{}, &kzhkProjects)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	log.Println(kzhkProjects, resp.Status)
 }

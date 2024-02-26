@@ -50,7 +50,7 @@ func (s Services) GiveKZHKProjects() ([]entities.KHCAllowedProject, error) {
 	if err = json.NewDecoder(resp.Body).Decode(&res); err != nil {
 		return nil, err
 	}
-	fmt.Println(res)
+	// fmt.Println(res)
 	return res, nil
 }
 

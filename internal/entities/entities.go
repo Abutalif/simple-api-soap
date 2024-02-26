@@ -31,5 +31,5 @@ type About struct {
 }
 
 type Data interface {
-	About | AstanaBuilding | KHCAllowedProject
+	About | []AstanaBuilding | []KHCAllowedProject
 }
