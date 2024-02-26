@@ -2,20 +2,19 @@ package soaphandlers
 
 import (
 	"encoding/xml"
-	"soap-server/internal/entities"
 )
 
-type Envelope[V entities.Data] struct {
-	XMLName xml.Name `xml:"env:Envelope"`
+type Envelope struct {
+	XMLName xml.Name `xml:"Envelope"`
 	Header  Header
-	Body    Body[V]
+	Body    Body
 }
 
 type Header struct {
-	XMLName xml.Name `xml:"env:Header"`
+	XMLName xml.Name `xml:"Header"`
 }
 
-type Body[V entities.Data] struct {
-	XMLName xml.Name `xml:"env:Body"`
-	Data    V
+type Body struct {
+	XMLName xml.Name    `xml:"Body"`
+	Data    interface{} `xml:"data"`
 }

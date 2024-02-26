@@ -1,29 +1,43 @@
 package main
 
 import (
-	"bytes"
 	"encoding/xml"
 	"fmt"
 	"net/http"
-	"soap-server/internal/entities"
 	soaphandlers "soap-server/pkg/transport/handlers"
 )
 
 func main() {
-	var buffer []byte
 	client := http.Client{}
-	resp, err := client.Post("http://127.0.0.1:8080/about", "application/soap+xml", bytes.NewBuffer(buffer))
+	resp, err := client.Post("http://127.0.0.1:8080/about", "application/soap+xml", nil)
 	if err != nil {
 		fmt.Println("post error:", err)
 		return
 	}
 	defer resp.Body.Close()
-	var envelope soaphandlers.Envelope[entities.About]
+	// respBody, err := io.ReadAll(resp.Body)
+	// if err != nil {
+	// 	fmt.Println("reading:", err)
+	// }
+	// // fmt.Printf("the data: %+v\n", string(respBody))
+	var envelope soaphandlers.Envelope
+
 	err = xml.NewDecoder(resp.Body).Decode(&envelope)
 	if err != nil {
 		fmt.Println("decoder error:", err)
 		return
 	}
-	fmt.Printf("%+v\n", envelope)
 
+	// d := xml.NewDecoder(resp.Body)
+
+	// for t, _ := d.Token(); t != nil; t, _ = d.Token() {
+	// 	switch se := t.(type) {
+	// 	case xml.StartElement:
+	// 		if se.Name.Local == foodElementName {
+	// 			// d.DecodeElement(&food, &se)
+	// 			// menu.Food = append(menu.Food, food)
+	// 		}
+	// 	}
+	// }
+	fmt.Printf("%+v\n", envelope)
 }

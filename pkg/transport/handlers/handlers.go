@@ -4,7 +4,6 @@ import (
 	"encoding/xml"
 	"fmt"
 	"net/http"
-	"soap-server/internal/entities"
 	"soap-server/internal/services"
 )
 
@@ -30,18 +29,29 @@ func (h *handlers) aboutHandle(rw http.ResponseWriter, r *http.Request) {
 	}
 
 	data := h.srvs.GiveAbout()
-	resp := Envelope[entities.About]{
-		Body: Body[entities.About]{
+	resp := Envelope{
+		Body: Body{
 			Data: data,
 		},
 	}
 
 	fmt.Println(data)
+
+	// res, err := xml.Marshal(resp)
+	// if err != nil {
+	// 	http.Error(rw, "cannot encode xml", http.StatusInternalServerError)
+	// 	return
+	// }
+	// fmt.Println(string(res))
+	// _, err = rw.Write(res)
+	// if err != nil {
+	// 	http.Error(rw, "cannot encode xml", http.StatusInternalServerError)
+	// 	return
+	// }
 	if err := xml.NewEncoder(rw).Encode(resp); err != nil {
 		http.Error(rw, "cannot encode xml", http.StatusInternalServerError)
 		return
 	}
-	// fmt.Println(resp)
 }
 
 func (h *handlers) kzhkHandle(rw http.ResponseWriter, r *http.Request) {
@@ -57,14 +67,14 @@ func (h *handlers) kzhkHandle(rw http.ResponseWriter, r *http.Request) {
 		return
 
 	}
-	resp := Envelope[[]entities.KHCAllowedProject]{
-		Body: Body[[]entities.KHCAllowedProject]{
+	resp := Envelope{
+		Body: Body{
 			Data: data,
 		},
 	}
-	fmt.Println(resp)
+	fmt.Printf("%+v", resp)
 	if err := xml.NewEncoder(rw).Encode(resp); err != nil {
-		fmt.Println(err)
+		fmt.Printf("%+v", err)
 		http.Error(rw, "cannot encode xml", http.StatusInternalServerError)
 		return
 	}
@@ -79,20 +89,29 @@ func (h *handlers) astanaBuildHandle(rw http.ResponseWriter, r *http.Request) {
 
 	data, err := h.srvs.GiveAstanaBuildings()
 	if err != nil {
-		fmt.Println(err)
+		fmt.Printf("%+v", err)
 		http.Error(rw, "could not get data", http.StatusInternalServerError)
 		return
 
 	}
 
-	resp := Envelope[[]entities.AstanaBuilding]{
-		Body: Body[[]entities.AstanaBuilding]{
+	resp := Envelope{
+		Body: Body{
 			Data: data,
 		},
 	}
-
-	if err := xml.NewEncoder(rw).Encode(resp); err != nil {
+	res, err := xml.Marshal(resp)
+	if err != nil {
 		http.Error(rw, "cannot encode xml", http.StatusInternalServerError)
 		return
 	}
+	_, err = rw.Write(res)
+	if err != nil {
+		http.Error(rw, "cannot encode xml", http.StatusInternalServerError)
+		return
+	}
+	// if err := xml.NewEncoder(rw).Encode(resp); err != nil {
+	// 	http.Error(rw, "cannot encode xml", http.StatusInternalServerError)
+	// 	return
+	// }
 }
