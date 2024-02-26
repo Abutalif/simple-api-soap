@@ -26,8 +26,8 @@ type AstanaBuilding struct {
 }
 
 type About struct {
-	Description   string
-	AvailableData []string
+	Description   string   `xml:"description"`
+	AvailableData []string `xml:"available_data"`
 }
 
 type Data interface {

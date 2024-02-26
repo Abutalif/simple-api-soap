@@ -37,17 +37,6 @@ func (h *handlers) aboutHandle(rw http.ResponseWriter, r *http.Request) {
 
 	fmt.Println(data)
 
-	// res, err := xml.Marshal(resp)
-	// if err != nil {
-	// 	http.Error(rw, "cannot encode xml", http.StatusInternalServerError)
-	// 	return
-	// }
-	// fmt.Println(string(res))
-	// _, err = rw.Write(res)
-	// if err != nil {
-	// 	http.Error(rw, "cannot encode xml", http.StatusInternalServerError)
-	// 	return
-	// }
 	if err := xml.NewEncoder(rw).Encode(resp); err != nil {
 		http.Error(rw, "cannot encode xml", http.StatusInternalServerError)
 		return

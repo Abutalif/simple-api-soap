@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/xml"
 	"fmt"
+	"io"
 	"net/http"
 	soaphandlers "soap-server/pkg/transport/handlers"
 )
@@ -15,18 +16,22 @@ func main() {
 		return
 	}
 	defer resp.Body.Close()
-	// respBody, err := io.ReadAll(resp.Body)
-	// if err != nil {
-	// 	fmt.Println("reading:", err)
-	// }
-	// // fmt.Printf("the data: %+v\n", string(respBody))
-	var envelope soaphandlers.Envelope
-
-	err = xml.NewDecoder(resp.Body).Decode(&envelope)
+	respBody, err := io.ReadAll(resp.Body)
 	if err != nil {
-		fmt.Println("decoder error:", err)
+		fmt.Println("reading:", err)
+	}
+	// fmt.Printf("the data: %+v\n", string(respBody))
+	var envelope soaphandlers.Envelope
+	err = xml.Unmarshal(respBody, &envelope)
+	if err != nil {
+		fmt.Println("unmarshal error", err)
 		return
 	}
+	// err = xml.NewDecoder(resp.Body).Decode(&envelope)
+	// if err != nil {
+	// 	fmt.Println("decoder error:", err)
+	// 	return
+	// }
 
 	// d := xml.NewDecoder(resp.Body)
 
@@ -39,5 +44,7 @@ func main() {
 	// 		}
 	// 	}
 	// }
+	fmt.Printf("%+v\n", string(respBody))
+
 	fmt.Printf("%+v\n", envelope)
 }
